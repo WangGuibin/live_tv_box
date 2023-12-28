@@ -11,6 +11,7 @@ class LivePage extends StatefulWidget {
 
 class _LivePageState extends State<LivePage> {
   late String playUrl;
+  final TextEditingController inputController = TextEditingController();
 
   final GlobalKey<MyVideoPlayerState> childKey =
       GlobalKey<MyVideoPlayerState>();
@@ -31,14 +32,14 @@ class _LivePageState extends State<LivePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Live: $playUrl"),
+        title: const Text("m3u8在线播放器"),
         centerTitle: true,
         actions: [
-          // IconButton(
-          //     onPressed: _callChildChangeFullScreenMethod,
-          //     icon: childKey.currentState?.isFullScreen() == true
-          //         ? const Icon(Icons.fullscreen_exit)
-          //         : const Icon(Icons.fullscreen)),
+          IconButton(
+              onPressed: _callChildChangeFullScreenMethod,
+              icon: childKey.currentState?.isFullScreen() == true
+                  ? const Icon(Icons.fullscreen_exit)
+                  : const Icon(Icons.fullscreen)),
           IconButton(
               onPressed: () {
                 _showInputDialog(context);
@@ -47,20 +48,16 @@ class _LivePageState extends State<LivePage> {
           const SizedBox(width: 30),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(0),
-        alignment: Alignment.center,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: Colors.white,
-        child: Expanded(child: MyVideoPlayer(key: childKey, url: playUrl)),
+      body: Center(
+        child: Column(children: [
+          Expanded(child: MyVideoPlayer(key: childKey, url: playUrl))
+        ]),
       ),
     );
   }
 
   //弹窗 输入url
   _showInputDialog(context) {
-    final TextEditingController inputController = TextEditingController();
     showDialog(
       context: context,
       builder: (context) {

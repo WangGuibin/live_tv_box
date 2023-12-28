@@ -58,8 +58,10 @@ class MyVideoPlayerState extends State<MyVideoPlayer> {
   Widget build(BuildContext context) {
     final aspectRatio = _controller.value.aspectRatio;
     return Container(
-        width: _enableFullScreen ? MediaQuery.of(context).size.width : 960.0,
-        height: _enableFullScreen ? MediaQuery.of(context).size.height : 540.0,
+        width: _enableFullScreen ? MediaQuery.of(context).size.width : 480.0,
+        height: _enableFullScreen
+            ? MediaQuery.of(context).size.height
+            : 480.0 * aspectRatio,
         color: Colors.black,
         child: Stack(alignment: Alignment.center, children: [
           AspectRatio(

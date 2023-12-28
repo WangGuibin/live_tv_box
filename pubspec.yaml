@@ -37,8 +37,6 @@ dependencies:
   video_player: ^2.8.1
   video_player_web_hls: ^1.1.0
   video_player_web: ^2.1.2
-  collection: ^1.18.0
-  flutter_localization: ^0.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
