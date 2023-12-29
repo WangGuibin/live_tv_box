@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import './live.dart';
 import 'dart:ui_web';
+import 'package:localstorage/localstorage.dart';
 
 void main() {
+  LocalStorage('UrlList.json');
   runApp(const VideoApp());
 }
 

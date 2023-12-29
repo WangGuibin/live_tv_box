@@ -37,6 +37,7 @@ dependencies:
   video_player: ^2.8.1
   video_player_web_hls: ^1.1.0
   video_player_web: ^2.1.2
+  localstorage: ^4.0.1+4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -59,8 +60,7 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/live.txt
+  # assets:
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

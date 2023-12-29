@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 //封装播放
 import './videoPlayer.dart';
+import './historyList.dart';
 
 class LivePage extends StatefulWidget {
   const LivePage({super.key});
@@ -17,7 +18,24 @@ class _LivePageState extends State<LivePage> {
       GlobalKey<MyVideoPlayerState>();
 
   void _callChildChangeFullScreenMethod() {
-    childKey.currentState?.changeFullScreen();
+    setState(() {
+      childKey.currentState?.changeFullScreen();
+    });
+  }
+
+  void _navigateToHistoryList(BuildContext context) async {
+    dynamic result = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const HistoryList()));
+    if (result != null) {
+      setState(() {
+        playUrl = result as String;
+        childKey.currentState?.playNewUrl(playUrl);
+      });
+    }
+  }
+
+  bool isFullScreen() {
+    return childKey.currentState?.isFullScreen() ?? false;
   }
 
   @override
@@ -31,29 +49,45 @@ class _LivePageState extends State<LivePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("m3u8在线播放器"),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: _callChildChangeFullScreenMethod,
-              icon: childKey.currentState?.isFullScreen() == true
-                  ? const Icon(Icons.fullscreen_exit)
-                  : const Icon(Icons.fullscreen)),
-          IconButton(
-              onPressed: () {
-                _showInputDialog(context);
+        appBar: isFullScreen()
+            ? null
+            : AppBar(
+                title: const Text("m3u8在线播放器"),
+                centerTitle: true,
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        _navigateToHistoryList(context);
+                      },
+                      icon: const Icon(Icons.history)),
+                  IconButton(
+                      onPressed: _callChildChangeFullScreenMethod,
+                      icon: isFullScreen()
+                          ? const Icon(Icons.fullscreen_exit)
+                          : const Icon(Icons.fullscreen)),
+                  IconButton(
+                      onPressed: () {
+                        _showInputDialog(context);
+                      },
+                      icon: const Icon(Icons.add_box_rounded)),
+                  const SizedBox(width: 30),
+                ],
+              ),
+        body: Container(
+          padding: const EdgeInsets.all(0),
+          alignment: Alignment.center,
+          child: Column(children: [
+            Expanded(
+                child: MyVideoPlayer(
+              key: childKey,
+              url: playUrl,
+              onChange: () {
+                setState(() {});
               },
-              icon: const Icon(Icons.add_box_rounded)),
-          const SizedBox(width: 30),
-        ],
-      ),
-      body: Center(
-        child: Column(children: [
-          Expanded(child: MyVideoPlayer(key: childKey, url: playUrl))
-        ]),
-      ),
-    );
+            ))
+          ]),
+          // 替换YourWidget为您的实际小部件
+        ));
   }
 
   //弹窗 输入url
