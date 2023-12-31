@@ -97,17 +97,17 @@ class LivePage extends GetView<VideoPlayController> {
                           Get.dialog(_buildAlertDialog(context));
                         },
                         icon: const Icon(Icons.add_box_rounded)),
-                    IconButton(
-                        tooltip: '测试按钮',
-                        onPressed: () async {
-                          dynamic m3uText = await loadM3uAssets();
-                          List<Channel> channels = parseM3U8File(m3uText);
-                          HistoryTools.getSubscribeChannels(channels);
-                          for (Channel channel in channels) {
-                            channel.logInfo();
-                          }
-                        },
-                        icon: const Icon(Icons.home)),
+                    // IconButton(
+                    //     tooltip: '测试按钮',
+                    //     onPressed: () async {
+                    //       dynamic m3uText = await loadM3uAssets();
+                    //       List<Channel> channels = parseM3U8File(m3uText);
+                    //       HistoryTools.getSubscribeChannels(channels);
+                    //       for (Channel channel in channels) {
+                    //         channel.logInfo();
+                    //       }
+                    //     },
+                    //     icon: const Icon(Icons.home)),
                     const SizedBox(width: 30),
                   ],
                 ),
