@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:get/get.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:dio/dio.dart';
 
@@ -83,6 +82,7 @@ class SourceManager {
     Dio dio = Dio();
     try {
       dynamic res = await dio.get(url.trim());
+      SourceManager.setCurrentSource(url);
       addSource(SourceItem(iptvUrl: url, iptvText: res.data));
     } catch (e) {
       print(e);

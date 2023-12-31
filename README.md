@@ -66,7 +66,7 @@
 
 - 播放/暂停/全屏切换
 - 添加/删除管理频道列表
-- 添加/移除订阅源
+- 添加/移除订阅源 支持 m3u 和 txt 两种常用格式 (最好是链接带文件后缀 因为解析策略是按文件后缀来区分的)
 - 导入/导出频道列表 json 配置
 
 采用 github-pages 部署
@@ -80,3 +80,17 @@
 [√] https://cdn.jsdelivr.net/gh/WangGuibin/live_tv_box@main/cctv.m3u
 
 ```
+
+## 跨域问题
+
+本地调试可以尝试绕过
+
+```bash
+flutter run -d chrome --web-browser-flag "--disable-web-security"
+```
+
+网友们整理的一些源
+https://github.com/iptv-org/iptv
+https://github.com/vodtv/iptv 或者 https://m3u.vodtv.cn/
+
+不过好多源都播不了提示跨域,不知道咋解决,放弃了~

@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../pages/sourceList.dart';
+import '../controller/sourceListController.dart';
 
 class SourceListBindings extends Bindings {
   @override

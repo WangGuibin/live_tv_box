@@ -21,7 +21,7 @@ class VideoApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialRoute: App.root,
-      defaultTransition: Transition.rightToLeft,
+      defaultTransition: Transition.rightToLeftWithFade,
       getPages: App.routes,
       initialBinding: GlobalBindings(),
     );

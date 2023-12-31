@@ -4,10 +4,10 @@ import '../parser/parseM3u.dart';
 
 const kUrlsLocalKey = 'urls.local.abc.key';
 
-class HistoryItem {
+class ChannelItem {
   final String remark;
   final String url;
-  HistoryItem({required this.remark, required this.url});
+  ChannelItem({required this.remark, required this.url});
 
   toJSONEncodable() {
     Map<String, dynamic> item = {};
@@ -17,7 +17,7 @@ class HistoryItem {
   }
 
   static fromJsonMap(Map<String, dynamic> json) {
-    return HistoryItem(remark: json['remark'], url: json['url']);
+    return ChannelItem(remark: json['remark'], url: json['url']);
   }
 }
 
@@ -27,17 +27,20 @@ class HistoryTools {
     return storage;
   }
 
-  static List<HistoryItem> getItems() {
+  static List<ChannelItem> getItems() {
     String jsonStr = getStorage().getItem(kUrlsLocalKey) ?? '[]';
     List<dynamic> jsonMapList = json.decode(jsonStr);
-    List<HistoryItem>? items = jsonMapList
-        .map((item) => HistoryItem.fromJsonMap(item))
-        .cast<HistoryItem>()
+    List<ChannelItem>? items = jsonMapList
+        .map((item) => ChannelItem.fromJsonMap(item))
+        .cast<ChannelItem>()
         .toList();
+    //去重
+    final urls = <String>{};
+    items.retainWhere((item) => urls.add(item.url));
     return items;
   }
 
-  static saveToDB(List<HistoryItem> items) {
+  static saveToDB(List<ChannelItem> items) {
     LocalStorage storage = getStorage();
     List? toJsonMapList =
         items.map((item) => item.toJSONEncodable()).cast<dynamic>().toList();
@@ -58,11 +61,11 @@ class HistoryTools {
   ///导入源 json格式: name, remark
   static importTextSource(String jsonStr) {
     print(jsonStr);
-    List<HistoryItem> oldItems = getItems();
+    List<ChannelItem> oldItems = getItems();
     List<dynamic> jsonMapList = json.decode(jsonStr);
-    List<HistoryItem>? items = jsonMapList
-        .map((item) => HistoryItem.fromJsonMap(item))
-        .cast<HistoryItem>()
+    List<ChannelItem>? items = jsonMapList
+        .map((item) => ChannelItem.fromJsonMap(item))
+        .cast<ChannelItem>()
         .toList();
     oldItems.insertAll(0, items);
     saveToDB(oldItems);
@@ -70,11 +73,14 @@ class HistoryTools {
 
   //切换源之后 刷新频道列表 追加吧 没设计好
   static getSubscribeChannels(List<Channel> channels) {
-    List<HistoryItem> oldItems = getItems();
-    List<HistoryItem> items = channels.map((channel) {
+    List<ChannelItem> oldItems = getItems();
+    List<ChannelItem> items = channels.map((channel) {
       channel.logInfo();
-      return HistoryItem(remark: channel.title!, url: channel.url!);
+      return ChannelItem(remark: channel.title!, url: channel.url!);
     }).toList();
+    //url一样的剔除掉
+    oldItems.removeWhere(
+        (element) => items.map((e) => e.url).toList().contains(element.url));
     oldItems.insertAll(0, items);
     saveToDB(oldItems);
   }

@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -16,7 +16,6 @@ class VideoPlayController extends GetxController {
   RxString currenPlayUrl =
       'https://node1.olelive.com:6443/live/CCTV1HD/hls.m3u8'.obs;
   RxString currenPlayName = 'CCTV1HD'.obs;
-  RxList menuList = [].obs;
   var playBtnIconData = Icons.play_arrow.obs;
 
   @override
@@ -38,8 +37,7 @@ class VideoPlayController extends GetxController {
               (element) => element.iptvUrl == SourceManager.getCurrentSource())
           .toList()
           .first;
-      List<Channel> channels = parseM3U8File(ipTextItem.iptvText);
-      menuList.value = channels;
+      List<Channel> channels = parseM3U8File(ipTextItem);
       HistoryTools.getSubscribeChannels(channels);
     }
 
@@ -87,11 +85,11 @@ class VideoPlayController extends GetxController {
   }
 
   void _goFullScreen() {
-    document.documentElement?.requestFullscreen();
+    html.document.documentElement?.requestFullscreen();
   }
 
   void _exitFullScreen() {
-    document.exitFullscreen();
+    html.document.exitFullscreen();
   }
 
   // 切换播放
@@ -116,7 +114,8 @@ class VideoPlayController extends GetxController {
   }
 
   //播放新的url
-  void playNewUrl(String url, {String remark = 'Default'}) {
+  void playNewUrl(String url, {String remark = ''}) {
+    print('正在播放 $url');
     videoController.pause();
     videoController.dispose();
     isLoading.value = true;
@@ -140,15 +139,15 @@ class VideoPlayController extends GetxController {
       currenPlayName.value = remark ?? '在线播放器';
       videoController.play();
 
-      List<HistoryItem> items = HistoryTools.getItems();
+      List<ChannelItem> items = HistoryTools.getItems();
       if (items.isEmpty) {
-        items.insert(0, HistoryItem(remark: remark, url: url));
+        items.insert(0, ChannelItem(remark: remark, url: url));
         HistoryTools.saveToDB(items);
         return;
       }
 
       var newItems = items.where((element) => element.url != url).toList();
-      newItems.insert(0, HistoryItem(remark: remark, url: url));
+      newItems.insert(0, ChannelItem(remark: remark, url: url));
       HistoryTools.saveToDB(newItems);
       update();
     } catch (e) {

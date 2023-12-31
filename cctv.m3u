@@ -17,3 +17,13 @@ https://node1.olelive.com:6443/live/CCTV9HD/hls.m3u8
 https://node1.olelive.com:6443/live/CCTV10HD/hls.m3u8
 #EXTINF:-1 tvg-id="",CCTV17HD
 https://node1.olelive.com:6443/live/CCTV17HD/hls.m3u8
+#EXTINF:-1 tvg-id="",CGTN-F
+https://news.cgtn.com/resource/live/french/cgtn-f.m3u8
+#EXTINF:-1 tvg-id="",CGTN-A
+https://news.cgtn.com/resource/live/arabic/cgtn-a.m3u8
+#EXTINF:-1 tvg-id="",Bread TV面包台 (720p)
+https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
+#EXTINF:-1 tvg-id="",Angel TV Chinese (720p)
+https://cdn3.wowza.com/5/TDJ0aWNkNXFxWWta/angeltvcloud/ngrp:angelchinese_all/playlist.m3u8
+#EXTINF:-1 tvg-id="",余姚新闻综合 (576p)
+https://l.cztvcloud.com/channels/lantian/SXyuyao1/720p.m3u8
