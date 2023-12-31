@@ -1,0 +1,19 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="",CCTV1HD
+https://node1.olelive.com:6443/live/CCTV1HD/hls.m3u8
+#EXTINF:-1 tvg-id="",CCTV2HD
+https://node1.olelive.com:6443/live/CCTV2HD/hls.m3u8
+#EXTINF:-1 tvg-id="",CCTV5HD
+https://node1.olelive.com:6443/live/CCTV5HD/hls.m3u8
+#EXTINF:-1 tvg-id="",CCTV5+
+https://node1.olelive.com:6443/live/CCTV5PHD/hls.m3u8
+#EXTINF:-1 tvg-id="",CCTV7HD
+https://node1.olelive.com:6443/live/CCTV7HD/hls.m3u8
+#EXTINF:-1 tvg-id="",CCTV8HD
+https://node1.olelive.com:6443/live/CCTV8HD/hls.m3u8
+#EXTINF:-1 tvg-id="",CCTV9HD
+https://node1.olelive.com:6443/live/CCTV9HD/hls.m3u8
+#EXTINF:-1 tvg-id="",CCTV10HD
+https://node1.olelive.com:6443/live/CCTV10HD/hls.m3u8
+#EXTINF:-1 tvg-id="",CCTV17HD
+https://node1.olelive.com:6443/live/CCTV17HD/hls.m3u8

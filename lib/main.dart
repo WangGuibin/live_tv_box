@@ -1,31 +1,29 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
-import './live.dart';
-import 'dart:ui_web';
-import 'package:localstorage/localstorage.dart';
+import 'package:get/get.dart';
+import 'other/app.dart';
+import 'bindings/bindings.dart';
 
 void main() {
-  LocalStorage('UrlList.json');
   runApp(const VideoApp());
 }
 
-class VideoApp extends StatefulWidget {
+class VideoApp extends StatelessWidget {
   const VideoApp({super.key});
-
-  @override
-  _VideoAppState createState() => _VideoAppState();
-}
-
-class _VideoAppState extends State<VideoApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video Demo',
+    return GetMaterialApp(
+      title: '在线播放器',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
         useMaterial3: true,
       ),
-      home: const LivePage(),
+      initialRoute: App.root,
+      defaultTransition: Transition.rightToLeft,
+      getPages: App.routes,
+      initialBinding: GlobalBindings(),
     );
   }
 }
