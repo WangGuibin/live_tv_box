@@ -56,7 +56,6 @@ class _ChannelListState extends State<ChannelList> {
         textConfirm: '确定',
         onConfirm: () {
           callBack();
-          Get.back();
         });
   }
 
@@ -189,6 +188,7 @@ class _ChannelListState extends State<ChannelList> {
                   HistoryTools.saveToDB(items);
                   selectItems = [];
                   isEditMode = !isEditMode;
+                  Get.back();
                   Get.showSnackbar(const GetSnackBar(
                     duration: Duration(seconds: 1),
                     title: '友情提示',
@@ -245,7 +245,7 @@ class _ChannelListState extends State<ChannelList> {
                           items.remove(item);
                           HistoryTools.saveToDB(items);
                         });
-
+                        Get.back();
                         Get.showSnackbar(GetSnackBar(
                           duration: const Duration(seconds: 2),
                           title: '友情提示',

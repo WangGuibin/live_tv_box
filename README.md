@@ -93,4 +93,6 @@ flutter run -d chrome --web-browser-flag "--disable-web-security"
 https://github.com/iptv-org/iptv
 https://github.com/vodtv/iptv 或者 https://m3u.vodtv.cn/
 
-不过好多源都播不了提示跨域,不知道咋解决,放弃了~
+~~不过好多源都播不了提示跨域,不知道咋解决,放弃了~~
+(需要设置一个 webServer proxy 把 ts 的链接代理到本地进行转发 或者 本地调试执行`flutter run -d chrome --web-browser-flag "--disable-web-security"`可绕过该问题)
+客户端起个本地服务器进行代理或者直接后端进行代理转发可能会简单一些,至于 web 端好像是无解的,最好就是找一些支持跨域的源进行播放

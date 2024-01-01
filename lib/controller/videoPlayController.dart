@@ -2,6 +2,8 @@ import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_platform_interface/video_player_platform_interface.dart';
+
 import '../utils/historyTools.dart';
 import '../utils/sourceManager.dart';
 import '../parser/parseM3u.dart';
@@ -43,12 +45,17 @@ class VideoPlayController extends GetxController {
 
     update();
     try {
-      videoController =
-          VideoPlayerController.networkUrl(Uri.parse(currenPlayUrl.value))
-            ..initialize().then((_) {
-              isLoading.value = false;
-              update();
-            });
+      videoController = VideoPlayerController.networkUrl(
+          Uri.parse(currenPlayUrl.value),
+          httpHeaders: {'Access-Control-Allow-Origin': '*'},
+          videoPlayerOptions: VideoPlayerOptions(
+              webOptions: const VideoPlayerWebOptions(
+                  controls: VideoPlayerWebOptionsControls.enabled())))
+        ..initialize().then((_) {
+          isLoading.value = false;
+          update();
+        });
+
       enableFullScreen.value = false;
       isDisplayPlayBtn.value = true;
     } catch (e) {

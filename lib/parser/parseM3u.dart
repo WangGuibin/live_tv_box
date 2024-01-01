@@ -48,9 +48,9 @@ List<Channel> parseM3uFormat(List<String> lines) {
       if (line.contains('m3u8')) {
         String result = line.substring(0, line.indexOf('.m3u8'));
         currentChannel.url = "$result.m3u8";
+        channels.add(currentChannel);
+        currentChannel.logInfo();
       }
-      channels.add(currentChannel);
-      currentChannel.logInfo();
     }
   }
 
