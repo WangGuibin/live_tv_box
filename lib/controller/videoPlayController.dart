@@ -2,23 +2,49 @@ import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
 import '../utils/historyTools.dart';
 import '../utils/sourceManager.dart';
 import '../parser/parseM3u.dart';
 
+const defaultConfigs = [
+  "https://cdn.jsdelivr.net/gh/WangGuibin/live_tv_box@main/cctv.m3u",
+  "https://cdn.jsdelivr.net/gh/hujingguang/ChinaIPTV@main/cnTV_AutoUpdate.m3u8",
+  "https://cdn.jsdelivr.net/gh/TCatCloud/IPTV@Files/IPTV.m3u",
+  "https://cdn.jsdelivr.net/gh/richelsky/IPTV@main/%E5%9B%BD%E5%86%85%E7%94%B5%E8%A7%86%E5%8F%B02023.12KodiCN.txt",
+  "https://cdn.jsdelivr.net/gh/richelsky/IPTV@main/moyulive.txt",
+  "https://cdn.jsdelivr.net/gh/shidahuilang/shuyuan@shuyuan/iptv.txt",
+  "https://cdn.jsdelivr.net/gh/LITUATUI/M3UPT@main/M3U/M3UPT.m3u",
+];
+
 class VideoPlayController extends GetxController {
   late VideoPlayerController videoController;
+  final RxBool _isMute = false.obs;
   RxBool isLoading = true.obs;
   RxBool isFullScreen = false.obs;
   RxBool isDisplayPlayBtn = false.obs;
   RxBool isHover = false.obs;
   RxBool enableFullScreen = false.obs;
+  RxInt currentSeconds = 0.obs;
+  RxInt allSeconds = 0.obs;
+  RxBool showControls = true.obs;
+  RxBool showProgress = false.obs;
+
   RxString currenPlayUrl =
-      'https://node1.olelive.com:6443/live/CCTV1HD/hls.m3u8'.obs;
-  RxString currenPlayName = 'CCTV1HD'.obs;
+      'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'.obs;
+  RxString currenPlayName = '大白熊(测试)'.obs;
   var playBtnIconData = Icons.play_arrow.obs;
+
+  set isMute(bool val) {
+    _isMute.value = val;
+    videoController.setVolume(val ? 0.0 : 1.0);
+  }
+
+  bool get isMute => _isMute.value;
+
+  void toggleMute() {
+    isMute = !isMute;
+  }
 
   @override
   void onInit() {
@@ -28,8 +54,7 @@ class VideoPlayController extends GetxController {
     List sources = SourceManager.getSourceList();
     if (sources.isEmpty) {
       //默认添加一下内置源
-      SourceManager.addSubscriSource(
-          'https://cdn.jsdelivr.net/gh/WangGuibin/live_tv_box@main/cctv.m3u');
+      SourceManager.addSubscriSource(defaultConfigs);
     }
 
     if (SourceManager.getCurrentSource() != '' &&
@@ -46,22 +71,40 @@ class VideoPlayController extends GetxController {
     update();
     try {
       videoController = VideoPlayerController.networkUrl(
-          Uri.parse(currenPlayUrl.value),
-          httpHeaders: {'Access-Control-Allow-Origin': '*'},
-          videoPlayerOptions: VideoPlayerOptions(
-              webOptions: const VideoPlayerWebOptions(
-                  controls: VideoPlayerWebOptionsControls.enabled())))
-        ..initialize().then((_) {
+        Uri.parse(currenPlayUrl.value),
+      )..initialize().then((_) {
           isLoading.value = false;
           update();
         });
-
+      videoController.play();
+      _addListener();
       enableFullScreen.value = false;
-      isDisplayPlayBtn.value = true;
+      isDisplayPlayBtn.value = false;
     } catch (e) {
       print(e);
     }
     super.onInit();
+  }
+
+  ///添加监听
+  _addListener() {
+//监听播放进度
+    videoController.addListener(() {
+      final Duration position = videoController.value.position;
+      List<DurationRange> buffered = videoController.value.buffered;
+      showProgress.value = buffered.isNotEmpty;
+      if (buffered.isNotEmpty) {
+        DurationRange range = buffered.first;
+        // print('$position /  ${range.end}');
+        currentSeconds.value = position.inSeconds;
+        allSeconds.value = range.end.inSeconds;
+        showProgress.value = true;
+      } else {
+        currentSeconds.value = 0;
+        allSeconds.value = 0;
+      }
+      update();
+    });
   }
 
   bool isPlaying() {
@@ -70,6 +113,9 @@ class VideoPlayController extends GetxController {
 
   //单击屏幕
   void tapScreen() {
+    showControls.value = !showControls.value;
+    update();
+
     if (isPlaying()) return;
     isDisplayPlayBtn.value = true;
     update();
@@ -88,6 +134,8 @@ class VideoPlayController extends GetxController {
     } else {
       _exitFullScreen();
     }
+    showControls.value = true;
+    tapScreen();
     update();
   }
 
@@ -126,7 +174,6 @@ class VideoPlayController extends GetxController {
     videoController.pause();
     videoController.dispose();
     isLoading.value = true;
-    update();
 
     ///fix
     if (url.contains('m3u8')) {
@@ -143,7 +190,7 @@ class VideoPlayController extends GetxController {
       enableFullScreen.value = false;
       isDisplayPlayBtn.value = false;
       currenPlayUrl.value = url;
-      currenPlayName.value = remark ?? '在线播放器';
+      currenPlayName.value = remark;
       videoController.play();
 
       List<ChannelItem> items = HistoryTools.getItems();
@@ -156,6 +203,7 @@ class VideoPlayController extends GetxController {
       var newItems = items.where((element) => element.url != url).toList();
       newItems.insert(0, ChannelItem(remark: remark, url: url));
       HistoryTools.saveToDB(newItems);
+      _addListener();
       update();
     } catch (e) {
       print(e);

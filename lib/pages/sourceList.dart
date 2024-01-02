@@ -36,7 +36,7 @@ class SourceList extends GetView<SourceListController> {
           child: const Text('添加订阅'),
           onPressed: () async {
             String url = _iptvSourceController.text;
-            await SourceManager.addSubscriSource(url);
+            await SourceManager.addSubscriSource([url]);
             Get.back();
             controller.items = SourceManager.getSourceList();
           },
@@ -71,7 +71,7 @@ class SourceList extends GetView<SourceListController> {
                             tooltip: '拉取同步最新配置',
                             onPressed: () {
                               SourceManager.addSubscriSource(
-                                  controller.selectSource);
+                                  [controller.selectSource]);
                               Get.showSnackbar(const GetSnackBar(
                                 duration: Duration(seconds: 2),
                                 title: '友情提示',

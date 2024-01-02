@@ -14,7 +14,7 @@ List<Channel> parseM3U8File(SourceItem source) {
   //剔除空行
   lines = lines.where((element) => element.trim().isNotEmpty).toList();
 
-  if (source.iptvUrl.endsWith('.m3u')) {
+  if (source.iptvUrl.endsWith('.m3u') || source.iptvUrl.endsWith('.m3u8')) {
     return parseM3uFormat(lines);
   } else {
     return parseTxtFormat(lines);

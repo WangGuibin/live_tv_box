@@ -20,48 +20,6 @@
 
 4. 本地存储用的`localstorage`
 
-## 如何使用
-
-找一些公开的 iptv 直播链接即可测试播放
-比如:
-
-```json
-[
-  {
-    "url": "https://node1.olelive.com:6443/live/CCTV17HD/hls.m3u8",
-    "remark": "CCTV17"
-  },
-  {
-    "url": "https://node1.olelive.com:6443/live/CCTV7HD/hls.m3u8",
-    "remark": "CCTV7"
-  },
-  {
-    "url": "https://node1.olelive.com:6443/live/CCTV9HD/hls.m3u8",
-    "remark": "CCTV9"
-  },
-  {
-    "url": "https://node1.olelive.com:6443/live/CCTV5HD/hls.m3u8",
-    "remark": "CCTV5"
-  },
-  {
-    "url": "https://node1.olelive.com:6443/live/CCTV8HD/hls.m3u8",
-    "remark": "CCTV8"
-  },
-  {
-    "url": "https://node1.olelive.com:6443/live/CCTV1HD/hls.m3u8",
-    "remark": "CCTV1"
-  },
-  {
-    "url": "https://node1.olelive.com:6443/live/CCTV2HD/hls.m3u8",
-    "remark": "CCTV2"
-  },
-  {
-    "url": "https://node1.olelive.com:6443/live/CCTV10HD/hls.m3u8",
-    "remark": "CCTV10"
-  }
-]
-```
-
 ## 功能点
 
 - 播放/暂停/全屏切换
@@ -92,6 +50,8 @@ flutter run -d chrome --web-browser-flag "--disable-web-security"
 网友们整理的一些源
 https://github.com/iptv-org/iptv
 https://github.com/vodtv/iptv 或者 https://m3u.vodtv.cn/
+https://github.com/hujingguang/ChinaIPTV
+https://github.com/TCatCloud/IPTV
 
 ~~不过好多源都播不了提示跨域,不知道咋解决,放弃了~~
 (需要设置一个 webServer proxy 把 ts 的链接代理到本地进行转发 或者 本地调试执行`flutter run -d chrome --web-browser-flag "--disable-web-security"`可绕过该问题)

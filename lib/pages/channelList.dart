@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import '../utils/historyTools.dart';
 import '../utils/fileManager.dart';
+import '../components/searchBar.dart';
 
 class ChannelList extends StatefulWidget {
   const ChannelList({super.key});
@@ -62,6 +63,10 @@ class _ChannelListState extends State<ChannelList> {
   //按钮组
   List<Widget> _createActions() {
     return [
+      // IconButton(
+      //     tooltip: '搜索',
+      //     onPressed: () {},
+      //     icon: const Icon(Icons.search, color: Colors.lightBlue)),
       isEditMode
           ? IconButton(
               tooltip: '全选',
@@ -218,54 +223,75 @@ class _ChannelListState extends State<ChannelList> {
         : null;
   }
 
+  //搜索
+  void _onChangeQuery(String query) {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      setState(() {
+        List<ChannelItem> tempItems = List.of(HistoryTools.getItems());
+        List<ChannelItem> newItems = tempItems
+            .where((element) => element.remark.contains(query))
+            .toList();
+        items = newItems.isEmpty && query == '' ? tempItems : newItems;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return items.isEmpty
-        ? const Text('暂无数据')
-        : Scaffold(
-            appBar: AppBar(
-              title: Text('频道列表(${items.length})'),
-              centerTitle: true,
-              actions: _createActions(),
-            ),
-            body: ListView.builder(
-              itemBuilder: (context, index) {
-                ChannelItem item = items[index];
-                return Dismissible(
-                  key: Key(item.url),
-                  direction: DismissDirection.horizontal,
-                  confirmDismiss: (direction) {
-                    if (direction == DismissDirection.startToEnd) {
-                      copyTextToClipboard(item.url);
-                    } else {
-                      _showAlertDialog(
-                          '你确定要删除${item.remark != '' ? item.remark : item.url}频道吗',
-                          () {
-                        setState(() {
-                          items.remove(item);
-                          HistoryTools.saveToDB(items);
-                        });
-                        Get.back();
-                        Get.showSnackbar(GetSnackBar(
-                          duration: const Duration(seconds: 2),
-                          title: '友情提示',
-                          message:
-                              '${item.remark != '' ? item.remark : item.url}已删除!',
-                          snackPosition: SnackPosition.TOP,
-                        ));
-                      });
-                    }
-                    return Future.value(false);
-                  },
-                  // Show a red background as the item is swiped away.
-                  background: _createDismissibleBg(),
-                  child: _createCell(item, index),
-                  // 系统自带的 CheckboxListTile 改不到左边去 不好用 !
-                );
-              },
-              itemCount: items.length,
-            ),
-            floatingActionButton: _createDeleteActionButton(),
-          );
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('频道列表(${items.length})'),
+        centerTitle: true,
+        actions: _createActions(),
+      ),
+      body: Column(
+        children: [
+          CustomSearchBar(onQueryChanged: _onChangeQuery),
+          Expanded(
+              child: items.isEmpty
+                  ? const Center(
+                      child: Text('暂无数据'),
+                    )
+                  : ListView.builder(
+                      itemBuilder: (context, index) {
+                        ChannelItem item = items[index];
+                        return Dismissible(
+                          key: Key(item.url),
+                          direction: DismissDirection.horizontal,
+                          confirmDismiss: (direction) {
+                            if (direction == DismissDirection.startToEnd) {
+                              copyTextToClipboard(item.url);
+                            } else {
+                              _showAlertDialog(
+                                  '你确定要删除${item.remark != '' ? item.remark : item.url}频道吗',
+                                  () {
+                                setState(() {
+                                  items.remove(item);
+                                  HistoryTools.saveToDB(items);
+                                });
+                                Get.back();
+                                Get.showSnackbar(GetSnackBar(
+                                  duration: const Duration(seconds: 2),
+                                  title: '友情提示',
+                                  message:
+                                      '${item.remark != '' ? item.remark : item.url}已删除!',
+                                  snackPosition: SnackPosition.TOP,
+                                ));
+                              });
+                            }
+                            return Future.value(false);
+                          },
+                          // Show a red background as the item is swiped away.
+                          background: _createDismissibleBg(),
+                          child: _createCell(item, index),
+                          // 系统自带的 CheckboxListTile 改不到左边去 不好用 !
+                        );
+                      },
+                      itemCount: items.length,
+                    ))
+        ],
+      ),
+      floatingActionButton: _createDeleteActionButton(),
+    );
   }
 }

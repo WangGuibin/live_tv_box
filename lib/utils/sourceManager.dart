@@ -78,12 +78,18 @@ class SourceManager {
   }
 
   //订阅源
-  static addSubscriSource(String url) async {
+  static addSubscriSource(List<String> urls) async {
     Dio dio = Dio();
     try {
-      dynamic res = await dio.get(url.trim());
-      SourceManager.setCurrentSource(url);
-      addSource(SourceItem(iptvUrl: url, iptvText: res.data));
+      List<Response> responses = await Future.wait(
+        urls.map((url) => dio.get(url)),
+      );
+      Map<int, Response> resMap = responses.asMap();
+      for (int index in resMap.keys.toList()) {
+        addSource(
+            SourceItem(iptvUrl: urls[index], iptvText: responses[index].data));
+      }
+      SourceManager.setCurrentSource(urls.first);
     } catch (e) {
       print(e);
     }
